@@ -43,7 +43,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = compose_version
+        kotlinCompilerExtensionVersion = "1.5.1"
     }
     packaging {
         resources {
@@ -122,6 +122,11 @@ dependencies {
     implementation ("io.coil-kt:coil-compose:2.2.2")
     implementation ("io.coil-kt:coil-gif:2.2.2")
 
+    //VIDEO
+    implementation("io.getstream:stream-video-android-compose:0.4.2")
+
+    //WEB RTC
+    implementation ("io.getstream:stream-webrtc-android:1.0.0")
 }
 
 kapt {

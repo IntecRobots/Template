@@ -310,4 +310,8 @@ class RobotManager @Inject constructor(
         // Por ejemplo, usando una API de TTS proporcionada por el SDK del robot
         robotConnectionService.skillApi.playText(text, textListener)
     }
+
+    fun goTo(destinyGoal: String){
+        RobotApi.getInstance().startNavigation(0, destinyGoal,0.12345, 100000, actionListener)
+    }
 }

@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.ainirobot.coreservice.client.actionbean.Pose
 import com.ainirobot.coreservice.client.listener.Person
 import com.intec.template.robot.RobotManager
@@ -13,6 +14,8 @@ import com.intec.template.robot.data.Place
 import com.intec.template.robot.listeners.SpeechRecognitionListener
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -37,10 +40,19 @@ class RobotViewModel @Inject constructor(
     // Exponer los datos de MutableLiveData del RobotManager directamente o usar un LiveData que observe los cambios
     val destinationsList: LiveData<List<String>> = robotManager.getPlaceList()
 
+    private val _speechText = MutableStateFlow("")
+    val speechText = _speechText.asStateFlow()
+
     init{
         Log.d("RobotViewModel", "RobotViewModel Init")
         robotManager.setSpeechRecognitionListener(this)
         configurePersonDetection()
+
+        skillApiService.partialSpeechResult.observeForever { speechResult ->
+            viewModelScope.launch {
+                _speechText.value = speechResult
+            }
+        }
     }
 
     private fun configurePersonDetection() {
@@ -97,6 +109,10 @@ class RobotViewModel @Inject constructor(
 
     fun mirarAbajo(){
         robotManager.moveHeadDown()
+    }
+
+    fun irA(destino: String){
+        robotManager.goTo(destino)
     }
 
     fun toggleListening() {
